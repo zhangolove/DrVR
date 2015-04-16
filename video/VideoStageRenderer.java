@@ -148,10 +148,7 @@ public class VideoStageRenderer implements Renderer {
     }
 
 
-    public boolean updateVideoFrame()
-    {
-        return bgSprite.updateVideoFrame();
-    }
+
 
 
     private int loadShader(int type, String code)

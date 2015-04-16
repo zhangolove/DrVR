@@ -35,7 +35,7 @@ public class GLSprite
     private static final int VERTEX_BUFFER = 0;
     private static final int INDEX_BUFFER = 1;
     private static final String TAG = GLSprite.class.getSimpleName();
-    
+
     private static final int _COUNT = 4;
     private static final int VERTEX_COORDS_SIZE = 3;
     private static final int TEXTURE_COORDS_SIZE = 2;
@@ -64,7 +64,7 @@ public class GLSprite
     private int fAlphaHandle;
 
     protected int[] textures = {
-        -1
+            -1
     };
     protected int[] buffers = {
             -1, -1
@@ -90,11 +90,6 @@ public class GLSprite
 
     private boolean useWorkaroundsForSDK8 = false;
 
-
-    public GLSprite(Resources resources, int bitmapId)
-    {
-        this(resources, BitmapFactory.decodeResource(resources, bitmapId));
-    }
 
 
     public GLSprite(Resources res, Bitmap bmp)
@@ -178,11 +173,11 @@ public class GLSprite
         checkGlError("glBindBuffer buffers[" + VERTEX_BUFFER + "]");
         GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, 20 * FLOAT_SIZE_BYTES, vertices, GLES20.GL_STATIC_DRAW);
         checkGlError("glBufferData vertices");
-        
+
         if (useWorkaroundsForSDK8) {
             fix.android.opengl.GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES, 0);
         } else {
-            GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES, 0); 
+            GLES20.glVertexAttribPointer(positionHandle, 3, GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES, 0);
         }
 
         GLES20.glEnableVertexAttribArray(positionHandle);
@@ -192,7 +187,7 @@ public class GLSprite
         } else {
             GLES20.glVertexAttribPointer(textureHandle, 2, GLES20.GL_FLOAT, false, 5 * FLOAT_SIZE_BYTES, 3 * FLOAT_SIZE_BYTES);
         }
-        
+
         GLES20.glEnableVertexAttribArray(textureHandle);
 
         // Indexes
@@ -299,7 +294,7 @@ public class GLSprite
         onUpdateTexture();
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
-        
+
         if (updateVertexBuffer) {
             GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0, 20 * FLOAT_SIZE_BYTES, vertices);
             updateVertexBuffer = false;
@@ -309,7 +304,7 @@ public class GLSprite
         if (useWorkaroundsForSDK8) {
             fix.android.opengl.GLES20.glVertexAttribPointer(positionHandle, VERTEX_COORDS_SIZE, GLES20.GL_FLOAT, false, stride, 0);
             fix.android.opengl.GLES20.glVertexAttribPointer(textureHandle, TEXTURE_COORDS_SIZE, GLES20.GL_FLOAT, false, stride, VERTEX_COORDS_SIZE * FLOAT_SIZE_BYTES);
-        } else {            
+        } else {
             GLES20.glVertexAttribPointer(positionHandle, VERTEX_COORDS_SIZE, GLES20.GL_FLOAT, false, stride, 0);
             GLES20.glVertexAttribPointer(textureHandle, TEXTURE_COORDS_SIZE, GLES20.GL_FLOAT, false, stride, VERTEX_COORDS_SIZE * FLOAT_SIZE_BYTES);
         }
@@ -338,18 +333,11 @@ public class GLSprite
         } else {
             GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, _COUNT, GLES20.GL_UNSIGNED_SHORT, 0);
         }
-        
+
         checkGlError("glDrawElements");
     }
 
 
-    public void onDraw(Canvas canvas, float x, float y)
-    {
-        // currPaint.setAlpha((int) (alpha * 255.0f));
-        // dstRect.set(srcRect);
-        // dstRect.offset((int) x, (int) y);
-        // canvas.drawBitmap(texture, srcRect, dstRect, currPaint);
-    }
 
 
     public void setAlpha(float alpha)
@@ -367,23 +355,7 @@ public class GLSprite
 
     public void updateTexture(Resources res, Bitmap bitmap)
     {
-        if (this.texture != null) {
-            this.texture.recycle();
-        }
 
-        this.texture = TextureUtils.makeTexture(res, bitmap);
-
-        width = bitmap.getWidth();
-        height = bitmap.getHeight();
-
-        srcRect.set(0, 0, width, height);
-        imageWidth = width;
-        imageHeight = height;
-
-        textureWidth = texture.getWidth();
-        textureHeight = texture.getHeight();
-
-        updateTexture = true;
     }
 
 
@@ -399,8 +371,8 @@ public class GLSprite
             }
         }
     }
-    
-    
+
+
     public void freeResources()
     {
         if (texture != null) {
