@@ -34,7 +34,11 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 
+import com.google.vrtoolkit.cardboard.CardboardDeviceParams;
+import com.google.vrtoolkit.cardboard.CardboardView;
+import com.google.vrtoolkit.cardboard.sensors.NfcSensor;
 import com.parrot.freeflight.FreeFlightApplication;
 import com.parrot.freeflight.R;
 import com.parrot.freeflight.activities.base.ParrotActivity;
@@ -84,7 +88,7 @@ import com.parrot.freeflight.utils.SystemUtils;
 public class ControlDroneActivity
         extends ParrotActivity
         implements DeviceOrientationChangeDelegate, WifiSignalStrengthReceiverDelegate, DroneVideoRecordStateReceiverDelegate, DroneEmergencyChangeReceiverDelegate,
-        DroneBatteryChangedReceiverDelegate, DroneFlyingStateReceiverDelegate, DroneCameraReadyActionReceiverDelegate, DroneRecordReadyActionReceiverDelegate, SettingsDialogDelegate
+        DroneBatteryChangedReceiverDelegate, DroneFlyingStateReceiverDelegate, DroneCameraReadyActionReceiverDelegate, DroneRecordReadyActionReceiverDelegate, SettingsDialogDelegate,NfcSensor.OnCardboardNfcListener
 {
     private static final int LOW_DISK_SPACE_BYTES_LEFT = 1048576 * 20; //20 mebabytes
     private static final int WARNING_MESSAGE_DISMISS_TIME = 5000; // 5 seconds
@@ -94,6 +98,8 @@ public class ControlDroneActivity
 
     private static final int PITCH = 1;
     private static final int ROLL = 2;
+    private NfcSensor mNfcSensor;
+    private CardboardView mCardboardView;
 
 
     private DroneControlService droneControlService;
@@ -172,6 +178,9 @@ public class ControlDroneActivity
         }
 
         settings = getSettings();
+
+        mNfcSensor = NfcSensor.getInstance(this);
+        mNfcSensor.addOnCardboardNfcListener(this);
 
         this.isGoogleTV = SystemUtils.isGoogleTV(this);
 
@@ -735,5 +744,50 @@ public class ControlDroneActivity
     @Override
     public void onWifiSignalStrengthChanged(int strength) {
 
+    }
+
+    public void setCardboardView(CardboardView cardboardView)
+    {
+        mCardboardView = cardboardView;
+
+        if (cardboardView != null) {
+            CardboardDeviceParams cardboardDeviceParams = mNfcSensor.getCardboardDeviceParams();
+            if (cardboardDeviceParams == null) {
+                cardboardDeviceParams = new CardboardDeviceParams();
+            }
+
+            cardboardView.updateCardboardDeviceParams(cardboardDeviceParams);
+        }
+    }
+
+    @Override
+    public void onInsertedIntoCardboard(CardboardDeviceParams deviceParams) {
+        if (mCardboardView != null)
+            mCardboardView.updateCardboardDeviceParams(deviceParams);
+
+    }
+
+    @Override
+    public void onRemovedFromCardboard() {
+
+
+    }
+
+    public void setContentView(View view)
+    {
+        if ((view instanceof CardboardView)) {
+            setCardboardView((CardboardView)view);
+        }
+
+        super.setContentView(view);
+    }
+
+    public void setContentView(View view, ViewGroup.LayoutParams params)
+    {
+        if ((view instanceof CardboardView)) {
+            setCardboardView((CardboardView)view);
+        }
+
+        super.setContentView(view, params);
     }
 }
