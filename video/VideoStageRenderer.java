@@ -22,10 +22,14 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.google.vrtoolkit.cardboard.CardboardView;
+import com.google.vrtoolkit.cardboard.EyeTransform;
+import com.google.vrtoolkit.cardboard.HeadTransform;
+import com.google.vrtoolkit.cardboard.Viewport;
 import com.parrot.freeflight.ui.gl.GLBGVideoSprite;
 import com.parrot.freeflight.ui.hud.Sprite;
 
-public class VideoStageRenderer implements Renderer {
+public class VideoStageRenderer implements CardboardView.StereoRenderer {
 
     private GLBGVideoSprite bgSprite;
 
@@ -86,66 +90,9 @@ public class VideoStageRenderer implements Renderer {
 
 
 
-    public void onDrawFrame(GL10 gl)
-    {
-
-        bgSprite.onDraw(gl, 0, 0);
 
 
-    }
 
-
-    public void onSurfaceChanged(GL10 gl, int width, int height)
-    {
-        screenWidth = width;
-        screenHeight = height;
-
-        GLES20.glViewport(0, 0, width, height);
-        Matrix.orthoM(mProjMatrix, 0, 0, width, 0, height, 0, 2f);
-
-        bgSprite.setViewAndProjectionMatrices(mVMatrix, mProjMatrix);
-        bgSprite.onSurfaceChanged(gl, width, height);
-
-
-    }
-
-
-    public void onSurfaceChanged (Canvas canvas, int width, int height)
-    {
-        screenWidth = width;
-        screenHeight = height;
-
-        bgSprite.onSurfaceChanged(null, width, height);
-    }
-
-
-    public void onSurfaceCreated(GL10 gl, EGLConfig config)
-    {
-        startTime = System.currentTimeMillis();
-
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-
-        program = GLES20.glCreateProgram();
-        GLES20.glAttachShader(program, vertexShader);
-        GLES20.glAttachShader(program, fragmentShader);
-
-        GLES20.glLinkProgram(program);
-        bgSprite.init(gl, program);
-
-
-        Matrix.setLookAtM(mVMatrix, 0, /*x*/0, /*y*/0, /*z*/1.5f, 0f, 0f, -5f, 0, 1f, 0.0f);
-    }
-
-
-    public float getFPS()
-    {
-        return fps;
-    }
 
 
 
@@ -170,5 +117,60 @@ public class VideoStageRenderer implements Renderer {
     }
 
 
+    @Override
+    public void onNewFrame(HeadTransform headTransform) {
 
+    }
+
+    @Override
+    public void onDrawEye(EyeTransform eyeTransform) {
+        bgSprite.onDraw(0, 0);
+
+    }
+
+    @Override
+    public void onFinishFrame(Viewport viewport) {
+
+    }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+        screenWidth = width;
+        screenHeight = height;
+
+        GLES20.glViewport(0, 0, width, height);
+        Matrix.orthoM(mProjMatrix, 0, 0, width, 0, height, 0, 2f);
+
+        bgSprite.setViewAndProjectionMatrices(mVMatrix, mProjMatrix);
+        bgSprite.onSurfaceChanged(width, height);
+
+    }
+
+    @Override
+    public void onSurfaceCreated(EGLConfig eglConfig) {
+        startTime = System.currentTimeMillis();
+
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+
+        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+
+        program = GLES20.glCreateProgram();
+        GLES20.glAttachShader(program, vertexShader);
+        GLES20.glAttachShader(program, fragmentShader);
+
+        GLES20.glLinkProgram(program);
+        bgSprite.init(program);
+
+
+        Matrix.setLookAtM(mVMatrix, 0, /*x*/0, /*y*/0, /*z*/1.5f, 0f, 0f, -5f, 0, 1f, 0.0f);
+
+    }
+
+    @Override
+    public void onRendererShutdown() {
+
+    }
 }

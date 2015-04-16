@@ -125,7 +125,7 @@ public class GLSprite
     }
 
 
-    public void init(GL10 gl, int program)
+    public void init(int program)
     {
         this.program = program;
 
@@ -270,13 +270,13 @@ public class GLSprite
     }
 
 
-    public void onSurfaceChanged(GL10 gl, int width, int height)
+    public void onSurfaceChanged(int width, int height)
     {
         recalculateMatrix = true;
     }
 
     @SuppressLint("NewApi")
-    public void onDraw(GL10 gl, float x, float y)
+    public void onDraw(float x, float y)
     {
         if (!readyToDraw)
             return;

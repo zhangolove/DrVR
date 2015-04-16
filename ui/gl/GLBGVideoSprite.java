@@ -57,24 +57,24 @@ public class GLBGVideoSprite extends GLSprite
 
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height)
+    public void onSurfaceChanged(int width, int height)
     {
         this.screenWidth = width;
         this.screenHeight = height;
 
         onSurfaceChangedNative(width, height);
 
-        super.onSurfaceChanged(gl, width, height);
+        super.onSurfaceChanged(width, height);
     }
 
 
     @Override
-    public void onDraw(GL10 gl, float x, float y)
+    public void onDraw(float x, float y)
     {   if (!isVideoReady) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
     }
 
-        super.onDraw(gl, this.x, this.y);
+        super.onDraw(this.x, this.y);
     }
 
 

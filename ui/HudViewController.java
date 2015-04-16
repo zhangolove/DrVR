@@ -10,6 +10,8 @@ package com.parrot.freeflight.ui;
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.view.View;
+
+import com.google.vrtoolkit.cardboard.CardboardView;
 import com.parrot.freeflight.video.VideoStageRenderer;
 
 
@@ -19,7 +21,7 @@ public class HudViewController
 
 
 
-    private GLSurfaceView glView;
+    private CardboardView glView;
 
 
 
@@ -36,7 +38,7 @@ public class HudViewController
 
 
 
-        glView = new GLSurfaceView(context);
+        glView = new CardboardView(context);
         glView.setEGLContextClientVersion(2);
 
         context.setContentView(glView);
