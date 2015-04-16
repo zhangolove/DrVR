@@ -138,16 +138,16 @@ public class VideoStageRenderer implements Renderer {
 	public void onDrawFrame(GL10 gl) 
 	{
 	    // Limiting framerate in order to save some CPU time
-	    endTime = System.currentTimeMillis();
-	    long dt = endTime - startTime;
-
-	    if (dt < 33) try {
-            Thread.sleep(33 - dt);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-	    
-	    startTime = System.currentTimeMillis();
+//	    endTime = System.currentTimeMillis();
+//	    long dt = endTime - startTime;
+//
+//	    if (dt < 33) try {
+//            Thread.sleep(33 - dt);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//	    startTime = System.currentTimeMillis();
 
 	    // Drawing scene
 		bgSprite.onDraw(gl, 0, 0);
