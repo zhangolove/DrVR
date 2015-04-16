@@ -1294,6 +1294,7 @@ public class ControlDroneActivity
 
         if (hasFocus)
             setFullscreenMode();
+        //what
     }
 
     private void setFullscreenMode() {
