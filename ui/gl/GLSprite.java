@@ -36,7 +36,7 @@ public class GLSprite
     private static final int INDEX_BUFFER = 1;
     private static final String TAG = GLSprite.class.getSimpleName();
     
-    private static final int _COUNT = 4;
+    private static final int _COUNT = 8;
     private static final int VERTEX_COORDS_SIZE = 3;
     private static final int TEXTURE_COORDS_SIZE = 2;
     private static final int FLOAT_SIZE_BYTES = 4;
@@ -171,12 +171,12 @@ public class GLSprite
 
         GLES20.glGenBuffers(buffers.length, buffers, 0);
 
-        // Vertices
-        vertices = createVertex(width, height);
+        // Vertices MSS
+        //vertices = createVertex(width, height);
 
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
         checkGlError("glBindBuffer buffers[" + VERTEX_BUFFER + "]");
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, 20 * FLOAT_SIZE_BYTES, vertices, GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, 40 * FLOAT_SIZE_BYTES, vertices, GLES20.GL_STATIC_DRAW);
         checkGlError("glBufferData vertices");
         
         if (useWorkaroundsForSDK8) {
@@ -198,22 +198,33 @@ public class GLSprite
         // Indexes
         indexes = createIndex();
         GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, buffers[INDEX_BUFFER]);
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, 4 * 2, indexes, GLES20.GL_STATIC_DRAW);
+        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, 8 * 2, indexes, GLES20.GL_STATIC_DRAW);
     }
 
 
     private FloatBuffer createVertex(float width, float height)
     {
-        float texXcoef = (float) imageWidth / (float) textureWidth;
-        float texYcoef = (float) imageHeight / (float) textureHeight;
+        //width = width; // MSS
+        float texXcoef1 = 0.25f;//(float) imageWidth / (float) textureWidth;
+        float texXcoef2 = 0.75f;//(float) imageWidth / (float) textureWidth;
+        float texYcoef = 1f;//(float) imageHeight / (float) textureHeight;
 
         // Init vertex where we will draw texture
         float[] rectVerticesData = {
                 // X Y Z U V
-                width, 0f, 0f, texXcoef, texYcoef,
-                width, height, 0f, texXcoef, 0,
-                0, 0, 0, 0, texYcoef,
-                0, height, 0, 0, 0
+                //width, 0f, 0f, texXcoef, texYcoef,
+                //width, height, 0f, texXcoef, 0,
+                //0, 0, 0, 0, texYcoef,
+                //0, height, 0, 0, 0,
+
+                width, 0f, 0f, texXcoef2, texYcoef,
+                width, height, 0f, texXcoef2, 0,
+                width/2, 0, 0, texXcoef1, texYcoef,
+                width/2, height, 0, texXcoef1, 0,
+                width/2, 0, 0, texXcoef2, texYcoef,
+                width/2, height, 0, texXcoef2, 0,
+                0, 0, 0, texXcoef1, texYcoef,
+                0, height, 0, texXcoef1, 0
         };
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(rectVerticesData.length * FLOAT_SIZE_BYTES);
@@ -229,7 +240,7 @@ public class GLSprite
     private ShortBuffer createIndex()
     {
         short[] indexesData = {
-                0, 1, 2, 3
+                0, 1, 2, 3, 4, 5, 6, 7
         };
 
         ByteBuffer vbb = ByteBuffer.allocateDirect(indexesData.length * (Short.SIZE / 8));
@@ -301,7 +312,7 @@ public class GLSprite
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, buffers[VERTEX_BUFFER]);
         
         if (updateVertexBuffer) {
-            GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0, 20 * FLOAT_SIZE_BYTES, vertices);
+            GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, 0, 40 * FLOAT_SIZE_BYTES, vertices);
             updateVertexBuffer = false;
         }
 
@@ -380,7 +391,7 @@ public class GLSprite
         imageWidth = width;
         imageHeight = height;
 
-        textureWidth = texture.getWidth();
+        textureWidth = texture.getWidth(); // MSS
         textureHeight = texture.getHeight();
 
         updateTexture = true;
