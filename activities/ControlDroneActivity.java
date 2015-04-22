@@ -144,6 +144,9 @@ public class ControlDroneActivity
     private boolean leftJoyPressed;
     private boolean isGoogleTV;
 
+    private ControllerInputs objControllerInputs = new ControllerInputs();
+
+
     private List<ButtonController> buttonControllers;
 
     private ServiceConnection mConnection = new ServiceConnection()
@@ -225,29 +228,57 @@ public class ControlDroneActivity
     }
 
 
-
-
-
-
+    @SuppressLint("NewApi")
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
-    {
-        if (applyKeyEvent(event)) {
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
+    public boolean onGenericMotionEvent(MotionEvent event) {
+
+        // Process all historical movement samples in the batch
+        final int historySize = event.getHistorySize();
+
+        // Process the movements starting from the
+        // earliest historical position in the batch
+        for (int i = 0; i < historySize; i++) {
+            // Process the event at historical position i
+            objControllerInputs.processJoystickInput(event, i, droneControlService);
         }
+
+        // Process the current movement sample in the batch (position -1)
+        objControllerInputs.processJoystickInput(event, -1, droneControlService);
+        return true;
+//        }
+
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event)
-    {
-        if (applyKeyEvent(event)) {
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if(objControllerInputs.processKeyDown(keyCode, event, droneControlService)){
             return true;
-        } else {
-            return super.onKeyUp(keyCode, event);
+        }else{
+            return false;
         }
     }
+
+
+//
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event)
+//    {
+//        if (applyKeyEvent(event)) {
+//            return true;
+//        } else {
+//            return super.onKeyDown(keyCode, event);
+//        }
+//    }
+//
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event)
+//    {
+//        if (applyKeyEvent(event)) {
+//            return true;
+//        } else {
+//            return super.onKeyUp(keyCode, event);
+//        }
+//    }
 
     private boolean applyKeyEvent(KeyEvent theEvent)
     {
